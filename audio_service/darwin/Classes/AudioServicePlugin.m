@@ -247,18 +247,6 @@ static NSMutableDictionary *nowPlayingInfo = nil;
     }
 }
 
-- (MPRemoteCommandHandlerStatus) play: (MPRemoteCommandEvent *) event {
-    //NSLog(@"play");
-    [handlerChannel invokeMethod:@"play" arguments:@{}];
-    return MPRemoteCommandHandlerStatusSuccess;
-}
-
-- (MPRemoteCommandHandlerStatus) pause: (MPRemoteCommandEvent *) event {
-    //NSLog(@"pause");
-    [handlerChannel invokeMethod:@"pause" arguments:@{}];
-    return MPRemoteCommandHandlerStatusSuccess;
-}
-
 - (BOOL)updateNowPlayingField:(NSString *)field value:(id)value {
     if (![value isEqual:nowPlayingInfo[field]]) {
         if (value != nil && value != [NSNull null]) {
@@ -373,14 +361,14 @@ static NSMutableDictionary *nowPlayingInfo = nil;
             break;
         case ASkipToPrevious:
             if (enable) {
-                [commandCenter.previousTrackCommand addTarget:self action:@selector(previousTrack:)];
+                [commandCenter.previousTrackCommand addTarget:self action:@selector(clickPrev:)];
             } else {
                 [commandCenter.previousTrackCommand removeTarget:nil];
             }
             break;
         case ASkipToNext:
             if (enable) {
-                [commandCenter.nextTrackCommand addTarget:self action:@selector(nextTrack:)];
+                [commandCenter.nextTrackCommand addTarget:self action:@selector(clickNext:)];
             } else {
                 [commandCenter.nextTrackCommand removeTarget:nil];
             }
@@ -464,6 +452,18 @@ static NSMutableDictionary *nowPlayingInfo = nil;
     return MPRemoteCommandHandlerStatusSuccess;
 }
 
+- (MPRemoteCommandHandlerStatus) play: (MPRemoteCommandEvent *) event {
+    //NSLog(@"play");
+    [handlerChannel invokeMethod:@"play" arguments:@{}];
+    return MPRemoteCommandHandlerStatusSuccess;
+}
+
+- (MPRemoteCommandHandlerStatus) pause: (MPRemoteCommandEvent *) event {
+    //NSLog(@"pause");
+    [handlerChannel invokeMethod:@"pause" arguments:@{}];
+    return MPRemoteCommandHandlerStatusSuccess;
+}
+
 - (MPRemoteCommandHandlerStatus) stop: (MPRemoteCommandEvent *) event {
     //NSLog(@"stop");
     [handlerChannel invokeMethod:@"stop" arguments:@{}];
@@ -476,9 +476,25 @@ static NSMutableDictionary *nowPlayingInfo = nil;
     return MPRemoteCommandHandlerStatusSuccess;
 }
 
+- (MPRemoteCommandHandlerStatus) clickNext: (MPRemoteCommandEvent *) event {
+    //NSLog(@"togglePlayPause");
+    [handlerChannel invokeMethod:@"click" arguments:@{
+        @"button":@(1)
+    }];
+    return MPRemoteCommandHandlerStatusSuccess;
+}
+
 - (MPRemoteCommandHandlerStatus) previousTrack: (MPRemoteCommandEvent *) event {
     //NSLog(@"previousTrack");
     [handlerChannel invokeMethod:@"skipToPrevious" arguments:@{}];
+    return MPRemoteCommandHandlerStatusSuccess;
+}
+
+- (MPRemoteCommandHandlerStatus) clickPrev: (MPRemoteCommandEvent *) event {
+    //NSLog(@"togglePlayPause");
+    [handlerChannel invokeMethod:@"click" arguments:@{
+        @"button":@(2)
+    }];
     return MPRemoteCommandHandlerStatusSuccess;
 }
 
